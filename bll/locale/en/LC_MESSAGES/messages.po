@@ -1,5 +1,6 @@
 # English translations for bll.
-# (c) Copyright 2016 Hewlett Packard Enterprise Development LP
+# (c) Copyright 2016-2017 Hewlett Packard Enterprise Development LP
+# (c) Copyright 2017 SUSE LLC
 # This file is distributed under the same license as the bll
 # project.
 # FIRST AUTHOR <gary.smith@hpe.com>, 2016.

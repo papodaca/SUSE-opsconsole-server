@@ -1,4 +1,5 @@
 # (c) Copyright 2016-2017 Hewlett Packard Enterprise Development LP
+# (c) Copyright 2017 SUSE LLC
 from mock import mock, patch
 
 from tests.util import functional, get_token_from_env, TestCase, randomurl, \

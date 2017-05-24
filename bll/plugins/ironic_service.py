@@ -1,4 +1,5 @@
-# (c) Copyright 2016 Hewlett Packard Enterprise Development LP
+# (c) Copyright 2016-2017 Hewlett Packard Enterprise Development LP
+# (c) Copyright 2017 SUSE LLC
 from bll import api
 from bll.plugins import service
 from ironicclient import client as ironic_client

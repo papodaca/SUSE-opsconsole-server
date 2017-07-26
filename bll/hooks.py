@@ -1,4 +1,5 @@
 # (c) Copyright 2015-2016 Hewlett Packard Enterprise Development LP
+# (c) Copyright 2017 SUSE LLC
 
 import logging
 from pecan.hooks import PecanHook

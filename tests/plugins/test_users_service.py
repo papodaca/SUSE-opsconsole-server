@@ -1,4 +1,5 @@
 # (c) Copyright 2015-2016 Hewlett Packard Enterprise Development LP
+# (c) Copyright 2017 SUSE LLC
 import os
 from bll.common.util import get_service_tenant_name
 from tests.util import functional, get_token_from_env, TestCase, \

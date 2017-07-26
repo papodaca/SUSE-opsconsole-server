@@ -1,4 +1,5 @@
 # (c) Copyright 2015-2016 Hewlett Packard Enterprise Development LP
+# (c) Copyright 2017 SUSE LLC
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -40,7 +41,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'BLL'
-copyright = '2016 Hewlett Packard Enterprise Development LP'
+copyright = '2016 Hewlett Packard Enterprise Development LP, 2017 SUSE LLC'
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
 add_function_parentheses = True

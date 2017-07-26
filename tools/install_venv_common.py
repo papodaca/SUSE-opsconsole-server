@@ -1,4 +1,5 @@
 # (c) Copyright 2015-2016 Hewlett Packard Enterprise Development LP
+# (c) Copyright 2017 SUSE LLC
 
 # Copyright 2013 OpenStack Foundation
 # Copyright 2013 IBM Corp.

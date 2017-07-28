@@ -91,7 +91,7 @@ def call_service_test_details(target=None, data=None, operation=None,
                 'measurements': [['some_data_string', 123]]
             }
         ]
-    elif target == 'hlm_ux':
+    elif target == 'ardana':
         if path == '/model/cp_output/server_info.yml':
             return {
                 cp_host_name: {

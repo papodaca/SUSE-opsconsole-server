@@ -141,7 +141,7 @@ class TestCatalogSvc(TestCase):
 
     def mock_call_service(self, target=None, operation=None, data=None,
                           action=None, include_status=False):
-        if target == 'hlm_ux':
+        if target == 'ardana':
             return {'services': self.mock_serv_comp}
         elif target == 'nova' and operation == 'hypervisor-list':
             return self.mock_hyp_list
@@ -212,7 +212,7 @@ class TestCatalogSvc(TestCase):
 
     @mock.patch('bll.plugins.service.SvcBase.call_service')
     @mock.patch('bll.plugins.catalog_service.get_conf')
-    def test_get_compute_clusters_from_hlm_ux(self, mock_conf, mock_cs):
+    def test_get_compute_clusters_from_ardana(self, mock_conf, mock_cs):
         mock_conf.return_value = None
         mock_cs.side_effect = self.mock_call_service
         self._test_get_compute_clusters()
@@ -237,7 +237,7 @@ class TestCatalogSvc(TestCase):
 
     @mock.patch('bll.plugins.service.SvcBase.call_service')
     @mock.patch('bll.plugins.catalog_service.get_conf')
-    def test_get_swift_clusters_from_hlm_ux(self, mock_conf, mock_cs):
+    def test_get_swift_clusters_from_ardana(self, mock_conf, mock_cs):
         mock_conf.return_value = None
         mock_cs.side_effect = self.mock_call_service
         self._test_get_swift_clusters()

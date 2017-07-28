@@ -13,23 +13,23 @@ import time
 LOG = logging.getLogger(__name__)
 
 
-class HLMUXSvc(SvcBase):
+class ArdSvc(SvcBase):
     """
-    The hlm ux service is written does not have a python client, since it is
+    The ardana service is written does not have a python client, since it is
     written in JavaScript and runs under node.  Therefore all interaction is
     done via direct REST calls
 
-    The ``target`` value for this plugin is ``hlm_ux``. See :ref:`rest-api`
+    The ``target`` value for this plugin is ``ardana``. See :ref:`rest-api`
     for a full description of the request and response formats.
     """
 
     TASK_POLL_INTERVAL = 10
 
     def __init__(self, *args, **kwargs):
-        super(HLMUXSvc, self).__init__(*args, **kwargs)
+        super(ArdSvc, self).__init__(*args, **kwargs)
 
-        url = self.token_helper.get_service_endpoint('hlm-ux-services')
-        self.base_url = "/".join([url.strip(), 'api/v1/hlm'])
+        url = self.token_helper.get_service_endpoint('ardana')
+        self.base_url = "/".join([url.strip(), 'api/v1'])
 
         if not self.operation:
             self.operation = 'do_path_operation'
@@ -39,14 +39,14 @@ class HLMUXSvc(SvcBase):
         """
         Delete a host
 
-        Once the hlm delete operation successfully completes
+        Once the delete operation successfully completes
         ensure that nova-service delete call is made.
         This will be removed as soon as the delete host playbook is created,
-        (which will be called from the hlm backend)
+        (which will be called from the ardana backend)
 
         Request format::
 
-            "target": "hlm_ux",
+            "target": "ardana",
             "operation": "delete_compute_host",
             "data": {
                 "request_data": {
@@ -65,7 +65,7 @@ class HLMUXSvc(SvcBase):
         serverid = request_data['serverid']
         hostname = request_data['novaServiceDelete']['hostname']
 
-        # Make the usual hlm delete request to /server
+        # Make the usual ardana delete request to /server
         url = 'servers/%s/process' % serverid
         self._request(url, action='DELETE')
 
@@ -79,11 +79,11 @@ class HLMUXSvc(SvcBase):
     @expose()
     def do_path_operation(self):
         """
-        Perform an operation against the given path in hlm_ux_service.
+        Perform an operation against the given path in ardana_service.
         Example payload (``request_data`` and ``request_parameters`` sections
         are optional)::
 
-            "target": "hlm_ux",
+            "target": "ardana",
             "operation": "do_path_operation",
             "data": {
                 "path": "model/entities/server",
@@ -114,7 +114,7 @@ class HLMUXSvc(SvcBase):
         Aggregates the networking information in the servers list to return
         a list of networks across all servers.  Example payload:
 
-            "target": "hlm_ux",
+            "target": "ardana",
             "operation": "get_network_data"
 
         """
@@ -141,7 +141,7 @@ class HLMUXSvc(SvcBase):
 
         Request format::
 
-            "target": "hlm_ux",
+            "target": "ardana",
             "operation": "run_playbook",
             "data": {
                 "playbook_name": "MYPLAYBOOK",    # REQUIRED
@@ -180,7 +180,7 @@ class HLMUXSvc(SvcBase):
                 LOG.exception(e)
                 self.response.error(self._(
                     'Unknown error occurred, please refer to the following '
-                    'hlm_ux log: {}').format(self.ref_id))
+                    'ardana log: {}').format(self.ref_id))
                 return self.response
 
     def _request(self, relative_path, query_params=None, body=None,
@@ -217,4 +217,4 @@ class HLMUXSvc(SvcBase):
 
     @classmethod
     def needs_services(cls):
-        return ['hlm-ux-services']
+        return ['ardana']

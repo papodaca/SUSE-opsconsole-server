@@ -150,7 +150,7 @@ class ComputeSvc(SvcBase):
     def get_compute_details(self):
         """
         Obtains details of the given compute host.  Eon, monasca, nova,
-        and hlm_ux_services when available and necessary in order to get
+        and ardana_service when available and necessary in order to get
         these details.
 
         Request format::
@@ -205,7 +205,7 @@ class ComputeSvc(SvcBase):
             if resource_type in ["hlinux", "kvm", "rhel", "hyperv"]:
                 hlm_compute_name = eon_response['id']
                 resp_dict['hlm'] = self.call_service(
-                    target='hlm_ux',
+                    target='ardana',
                     path="/model/entities/servers/" + hlm_compute_name)
             elif resource_type == "esxcluster":
                 self.server_id = \
@@ -215,7 +215,7 @@ class ComputeSvc(SvcBase):
                 resp_dict['host_count'] = len(hosts)
                 if self.server_id is not None:
                     resp_dict['hlm'] = self.call_service(
-                        target='hlm_ux',
+                        target='ardana',
                         path="model/entities/servers/" + self.server_id)
                 else:
                     self.response[api.DATA] = [
@@ -428,7 +428,7 @@ class ComputeSvc(SvcBase):
         # Use the hostname to reverse-lookup the server name from the
         # config processor output's perspective
         server_info = self.call_service(
-            target='hlm_ux',
+            target='ardana',
             path='/model/cp_output/server_info.yml'
         )
         cp_host = None
@@ -441,7 +441,7 @@ class ComputeSvc(SvcBase):
 
         # Use the cp_host to get server-group and role-related data
         details['hlm'] = self.call_service(
-            target='hlm_ux',
+            target='ardana',
             path="/model/entities/servers/" + cp_host
         )
         return details

@@ -48,7 +48,7 @@ class EONSvc(service.SvcBase):
     def prepare_activate_template(self):
         """
         Returns an activation template for the given host type using data
-        from the hlm_ux_service.
+        from the ardana service.
 
         Request format::
 
@@ -60,12 +60,12 @@ class EONSvc(service.SvcBase):
         if type == 'esxcluster':
 
             all_network_names = self.call_service(
-                target="hlm_ux",
+                target="ardana",
                 operation="do_path_operation",
                 data={"path": "model/entities/networks"})
 
             all_network_group_names = self.call_service(
-                target="hlm_ux",
+                target="ardana",
                 operation="do_path_operation",
                 data={"path": "model/entities/network-groups"})
 
@@ -100,7 +100,7 @@ class EONSvc(service.SvcBase):
         elif type in ['hyperv', 'hlinux', 'rhel']:
 
             control_planes = self.call_service(
-                target="hlm_ux",
+                target="ardana",
                 operation="do_path_operation",
                 data={"path": "model/entities/control-planes"})
 
@@ -118,7 +118,7 @@ class EONSvc(service.SvcBase):
                             server_roles.append(resource)
 
             all_server_groups = self.call_service(
-                target="hlm_ux",
+                target="ardana",
                 operation="do_path_operation",
                 data={"path": "model/entities/server-groups"})
 
@@ -135,7 +135,7 @@ class EONSvc(service.SvcBase):
 
             if type != 'hyperv':
                 nic_mappings = self.call_service(
-                    target="hlm_ux",
+                    target="ardana",
                     operation="do_path_operation",
                     data={"path": "model/entities/nic-mappings"})
                 response['nic_mappings'] = nic_mappings
@@ -416,4 +416,4 @@ class EONSvc(service.SvcBase):
 
     @classmethod
     def needs_services(cls):
-        return [ENDPOINT_TYPE, "hlm-ux-services"]
+        return [ENDPOINT_TYPE, "ardana"]

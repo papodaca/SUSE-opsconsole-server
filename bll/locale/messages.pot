@@ -76,8 +76,8 @@ msgstr ""
 msgid "Resource not found in eon"
 msgstr ""
 
-#: bll/plugins/hlm_ux_service.py:178
-msgid "Unknown error occurred, please refer to the following hlm_ux log: {}"
+#: bll/plugins/ardana_service.py:178
+msgid "Unknown error occurred, please refer to the following ardana log: {}"
 msgstr ""
 
 #: bll/plugins/integratedtools_service.py:154

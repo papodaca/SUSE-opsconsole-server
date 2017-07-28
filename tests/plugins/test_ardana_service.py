@@ -7,18 +7,18 @@ from tests.util import functional, get_token_from_env, TestCase, randomurl, \
 from bll.common.exception import InvalidBllRequestException
 from bll.api.request import BllRequest
 from bll import api
-from bll.plugins.hlm_ux_service import HLMUXSvc
+from bll.plugins.ardana_service import ArdSvc
 from bll.common.job_status import get_job_status
 
 
-@functional('keystone,hlm-ux-services')
+@functional('keystone,ardana')
 class HLMUXSvcTest(TestCase):
 
     def setUp(self):
         self.user = None
         self.token = get_token_from_env()
 
-    def hlm_ux_operation(self, operation=None, path=None, request_data=None,
+    def ardana_operation(self, operation=None, path=None, request_data=None,
                          location=None):
         data = {}
         if path:
@@ -31,20 +31,20 @@ class HLMUXSvcTest(TestCase):
             data['location'] = location
         request = {
             api.ACTION: 'GET',
-            api.TARGET: 'hlm_ux',
+            api.TARGET: 'ardana',
             api.AUTH_TOKEN: self.token,
             api.DATA: data
         }
 
-        svc = HLMUXSvc(bll_request=BllRequest(request))
+        svc = ArdSvc(bll_request=BllRequest(request))
         return svc.handle()
 
     def test_delete_compute_host_no_input(self):
         with self.assertRaises(Exception):
-            self.hlm_ux_operation(operation='delete_compute_host')
+            self.ardana_operation(operation='delete_compute_host')
 
 
-class HLMUXSvcUnitTest(TestCase):
+class ArdSvcUnitTest(TestCase):
     mock_net_data = {
         'host1': {
             'net_data': {
@@ -97,10 +97,10 @@ class HLMUXSvcUnitTest(TestCase):
         # a get_service_endpoint function that we want to override
         _token_helper.return_value.get_service_endpoint.return_value = base_url
 
-        svc = HLMUXSvc(BllRequest(operation="do_path_operation",
-                                  auth_token=get_mock_token(),
-                                  action="GET",
-                                  data={
+        svc = ArdSvc(BllRequest(operation="do_path_operation",
+                                auth_token=get_mock_token(),
+                                action="GET",
+                                data={
                                       'path': path,
                                       'request_data': data,
                                       'request_parameters': ['key=value']
@@ -117,10 +117,10 @@ class HLMUXSvcUnitTest(TestCase):
     @patch('bll.plugins.service.TokenHelpers.get_service_endpoint',
            return_value=randomurl())
     def test_no_playbook(self, *_):
-        svc = HLMUXSvc(BllRequest(operation='run_playbook',
-                                  auth_token=get_mock_token(),
-                                  action='POST',
-                                  data={
+        svc = ArdSvc(BllRequest(operation='run_playbook',
+                                auth_token=get_mock_token(),
+                                action='POST',
+                                data={
                                   }))
         with self.assertRaises(InvalidBllRequestException):
             svc.handle()
@@ -145,8 +145,8 @@ class HLMUXSvcUnitTest(TestCase):
         elif action == 'GET':
             # we're now in the non-validate section of handling an is_long
             # function so just pretend we're done
-            if url.endswith('hlm/model/cp_output/server_info_yml'):
-                return MockResponse(200, HLMUXSvcUnitTest.mock_net_data)
+            if url.endswith('model/cp_output/server_info_yml'):
+                return MockResponse(200, ArdSvcUnitTest.mock_net_data)
             return MockResponse(200,
                                 {
                                     'pRef': 'ref_1',
@@ -157,13 +157,13 @@ class HLMUXSvcUnitTest(TestCase):
 
     @patch('bll.plugins.service.TokenHelpers.get_service_endpoint',
            return_value=randomurl())
-    @patch('bll.plugins.hlm_ux_service.requests.request',
+    @patch('bll.plugins.ardana_service.requests.request',
            side_effect=mock_request)
     def test_playbook_cycle(self, *_):
-        svc = HLMUXSvc(BllRequest(operation='run_playbook',
-                                  auth_token=get_mock_token(),
-                                  action='POST',
-                                  data={
+        svc = ArdSvc(BllRequest(operation='run_playbook',
+                                auth_token=get_mock_token(),
+                                action='POST',
+                                data={
                                       'playbook_name': 'some_playbook',
                                   }))
 
@@ -184,12 +184,12 @@ class HLMUXSvcUnitTest(TestCase):
         self.assertFalse(status[api.DATA]['alive'])
         self.assertEquals(status[api.DATA]['code'], 0)
 
-    @patch('leia.plugin.service.TokenHelpers.get_service_endpoint',
+    @patch('bll.plugins.service.TokenHelpers.get_service_endpoint',
            return_value=randomurl())
-    @patch('leia.plugin.drivers.hlm_ux_service.requests.request',
+    @patch('bll.plugins.ardana_service.requests.request',
            side_effect=mock_request)
     def test_get_network_data(self, *_):
-        svc = HLMUXSvc(BllRequest(operation='get_network_data',
+        svc = ArdSvc(BllRequest(operation='get_network_data',
                                   auth_token=get_mock_token()))
         networks = svc.handle()['data']
 

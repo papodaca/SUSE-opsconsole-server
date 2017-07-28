@@ -195,7 +195,7 @@ class CatalogSvc(service.SvcBase):
         """
             Gets the requested section from service_topology.yml in
             the config file and if it doesn't succeed, try to get it from
-            hlm_ux_service
+            ardana service
         """
 
         # First try getting it from the config file (blazingly fast)
@@ -203,9 +203,9 @@ class CatalogSvc(service.SvcBase):
         if comp_topo:
             return comp_topo
         else:
-            # Otherwise, try getting it from hlm_ux_service (pretty slow)
+            # Otherwise, try getting it from ardana service (pretty slow)
             services = self.call_service(
-                target='hlm_ux',
+                target='ardana',
                 operation='do_path_operation',
                 data={'path': '/model/cp_output/service_topology.yml'}
             )

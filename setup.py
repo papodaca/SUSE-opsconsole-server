@@ -67,7 +67,7 @@ setup(
             entry("compute", "ComputeSvc"),
             entry("eon", "EONSvc"),
             entry("eula", "EulaSvc"),
-            entry("hlm_ux", "HLMUXSvc"),
+            entry("ardana", "ArdSvc"),
             entry("ironic", "IronicSvc"),
             entry("monitor", "MonitorSvc"),
             entry("nova", "NovaSvc"),

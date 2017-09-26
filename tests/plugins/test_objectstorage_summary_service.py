@@ -19,7 +19,7 @@ MEASUREMENT_OUPUT = [{'dimensions':
                        'component': 'ops-console-web',
                        'control_plane': 'ccp',
                        'mount': '/dev/mqueue',
-                       'cloud_name': 'cs10cloud'
+                       'cloud_name': 'mycloud'
                        },
                       'measurements': [['2016-08-28T22:41:15.000Z', 12.0, {}],
                                        ['2016-08-28T23:41:15.000Z', 59.0, {}]
@@ -95,13 +95,13 @@ ALARM_SHOW_OUTPUT = {'state': "ALARM",
 
 
 CALL_SERVICE_OUTPUT = {'ccp:cluster1':
-                       ['padawan-ccp-c1-m1-mgmt',
-                        'padawan-ccp-c1-m2-mgmt',
-                        'padawan-ccp-c1-m3-mgmt'],
+                       ['standard-ccp-c1-m1-mgmt',
+                        'standard-ccp-c1-m2-mgmt',
+                        'standard-ccp-c1-m3-mgmt'],
                        'ccp:cluster2':
-                       ['padawan-ccp-c1-m1-mgmt',
-                        'padawan-ccp-c1-m2-mgmt',
-                        'padawan-ccp-c1-m3-mgmt']}
+                       ['standard-ccp-c1-m1-mgmt',
+                        'standard-ccp-c1-m2-mgmt',
+                        'standard-ccp-c1-m3-mgmt']}
 
 ALARM_COUNT_OUTPUT = {"counts":
                       [[5, "OK", "LOW"],
@@ -440,13 +440,13 @@ class TestObjectStorageSummarySvc(TestCase):
         mock_get_token_for_project.return_value = "admin"
         mock_get_service_endpoint.return_value = "http://localhost:8070/v2.0"
         mock_call_service.return_value = {'ccp:cluster1':
-                                          ['padawan-ccp-c1-m1-mgmt',
-                                           'padawan-ccp-c1-m2-mgmt',
-                                           'padawan-ccp-c1-m3-mgmt'],
+                                          ['standard-ccp-c1-m1-mgmt',
+                                           'standard-ccp-c1-m2-mgmt',
+                                           'standard-ccp-c1-m3-mgmt'],
                                           'ccp:cluster2':
-                                          ['padawan-ccp-c1-m1-mgmt',
-                                           'padawan-ccp-c1-m2-mgmt',
-                                           'padawan-ccp-c1-m3-mgmt']}
+                                          ['standard-ccp-c1-m1-mgmt',
+                                           'standard-ccp-c1-m2-mgmt',
+                                           'standard-ccp-c1-m3-mgmt']}
         mock_alarm_count.return_value = {"counts":
                                          [[5, "OK", "LOW"],
                                           [6, "ALARM", "CRITICAL"],
@@ -479,13 +479,13 @@ class TestObjectStorageSummarySvc(TestCase):
         mock_get_token_for_project.return_value = "admin"
         mock_get_service_endpoint.return_value = "http://localhost:8070/v2.0"
         mock_call_service.return_value = {'ccp:cluster1':
-                                          ['padawan-ccp-c1-m1-mgmt',
-                                           'padawan-ccp-c1-m2-mgmt',
-                                           'padawan-ccp-c1-m3-mgmt'],
+                                          ['standard-ccp-c1-m1-mgmt',
+                                           'standard-ccp-c1-m2-mgmt',
+                                           'standard-ccp-c1-m3-mgmt'],
                                           'ccp:cluster2':
-                                          ['padawan-ccp-c1-m1-mgmt',
-                                           'padawan-ccp-c1-m2-mgmt',
-                                           'padawan-ccp-c1-m3-mgmt']}
+                                          ['standard-ccp-c1-m1-mgmt',
+                                           'standard-ccp-c1-m2-mgmt',
+                                           'standard-ccp-c1-m3-mgmt']}
         mock_alarm_count.return_value = {"counts": [[5, "OK", "LOW"],
                                                     [6, "OK", "HIGH"]]}
         request = {
@@ -639,7 +639,7 @@ class TestObjectStorageSummarySvc(TestCase):
         ]
         mock_list_statistics.return_value = [
             {"dimensions": {"user_id": "None",
-                            "cloud_name": "padawan",
+                            "cloud_name": "standard",
                             "region": "None",
                             "resource_id": "62d256ae5f1748dab8fedf8ebdf4b802",
                             "control_plane": "ccp",

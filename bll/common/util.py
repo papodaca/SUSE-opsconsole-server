@@ -102,34 +102,32 @@ def empty(value):
     return False
 
 
-# Get the application environment, which should default to cs
 def _get_app_env():
-    return conf.get('env', 'cs')
+    return conf.get('env', 'stdcfg')
 
 
-def is_hos():
+def is_stdcfg():
     """
-    Determines whether the BLL is running in a HOS environment or CS
+    Determines whether the BLL is running in a stdcfg environment or legacy
     environment based on the presence of an entry in the config file that
     indicates this.
 
     WARNING
 
-    Using this mechanism is undesirable since CS10 (and later) are based on
-    HOS, so the distinctions between the two environments are blurred.  It is
-    preferable to avoid using this function in the BLL, as well as its sibling
-    is_cs(), and instead rely in the presence of services to dictate logic.
+    It is preferable to avoid using this function in the BLL, as well as its 
+    sibling is_legacy(), and instead rely in the presence of services to 
+    dictate logic.
     """
-    return _get_app_env() == "hos"
+    return _get_app_env() == "stdcfg"
 
 
-def is_cs():
+def is_legacy():
     """
     WARNING
 
-    See description of is_hos above.
+    See description of is_stdcfg above.
     """
-    return _get_app_env() == "cs"
+    return _get_app_env() == "legacy"
 
 
 def get_conf(key, default=None):

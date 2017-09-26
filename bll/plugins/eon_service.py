@@ -6,7 +6,7 @@ import time
 
 from eonclient import client as eonclient
 from bll import api
-from bll.common.util import get_conf, is_hos
+from bll.common.util import get_conf, is_stdcfg
 from bll.plugins import service
 from bll.plugins.region_client import RegionClient
 
@@ -225,8 +225,6 @@ class EONSvc(service.SvcBase):
                 ...
             }
 
-        The documentation of all of the parameters to eon's
-        ``activate_resource`` API is at: https://wiki.hpcloud.net/x/4cRYAw
         """
 
         if validate:
@@ -385,7 +383,7 @@ class EONSvc(service.SvcBase):
             "operation": "delete_resource",
             "data": {"data": {"ids": ["MYID1", "MYID2"...]}}
         """
-        if is_hos():
+        if is_stdcfg():
             return self.eon_client.delete_resource(self.datadata['id'])
         else:
             datadata = self.data.get(api.DATA)

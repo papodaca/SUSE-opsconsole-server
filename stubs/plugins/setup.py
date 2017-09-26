@@ -24,8 +24,6 @@ setup(
 
     scripts=[],
 
-    provides=['hp.com'],
-
     packages=find_packages(),
     include_package_data=True,
 

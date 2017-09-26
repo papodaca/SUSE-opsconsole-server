@@ -119,40 +119,13 @@ class TestNovaSvc(TestCase):
             'list.return_value': self.hyp_list})
 
         self.server_list = []
-        # a DBaaS node
-        self.server_list.append(Server(
-            name='trove' + randomword(),
-            flavor_id=random.choice(self.flavor_list).id,
-            image_id=random.choice(self.image_list).id,
-            power_state=random.choice(power_states.keys()),
-            metadata={'monitor': 'true'},
-            tenant_id=self.project_list[1].id))
 
-        # not a DBaaS node
         self.server_list.append(Server(
             name=randomword(),
             flavor_id=random.choice(self.flavor_list).id,
             image_id=random.choice(self.image_list).id,
             power_state=random.choice(power_states.keys()),
             metadata={'monitor': 'true'},
-            tenant_id=self.project_list[1].id))
-
-        # msgaas node
-        self.server_list.append(Server(
-            name=randomword(),
-            flavor_id=random.choice(self.flavor_list).id,
-            image_id=random.choice(self.image_list).id,
-            power_state=random.choice(power_states.keys()),
-            metadata={'msgaas': 'true'},
-            tenant_id=self.project_list[1].id))
-
-        # ci node
-        self.server_list.append(Server(
-            name=randomword(),
-            flavor_id=random.choice(self.flavor_list).id,
-            image_id=random.choice(self.image_list).id,
-            power_state=random.choice(power_states.keys()),
-            metadata={'helionce': 'true'},
             tenant_id=self.project_list[1].id))
 
         # project node
@@ -164,7 +137,7 @@ class TestNovaSvc(TestCase):
             metadata={},
             tenant_id=self.project_list[0].id))
 
-        self.services_list = [Struct({'id': '1', 'host': 'hos1'})]
+        self.services_list = [Struct({'id': '1', 'host': 'myhost1'})]
 
         self.mock_novaclient.servers = Mock(**{
             'list.return_value': self.server_list})
@@ -230,104 +203,6 @@ class TestNovaSvc(TestCase):
         self.assertEqual(api.COMPLETE, reply[api.STATUS])
         self.assertEqual(
             len(self.server_list), len(reply[api.DATA]['instances']))
-
-    @mock.patch.object(UserGroupSvc, '_get_ks_client')
-    @mock.patch.object(TokenHelpers, 'get_service_endpoint')
-    @mock.patch.object(TokenHelpers, 'get_endpoints')
-    @mock.patch.object(NovaSvc, '_get_nova_client')
-    def test_dbaas_instance_list(self, _mock_nova_client,
-                                 _mock_endpoints,
-                                 _mock_serv_end,
-                                 _mock_ks_client):
-        _mock_nova_client.return_value = self.mock_novaclient
-        _mock_serv_end.return_value = None
-        _mock_ks_client.return_value = self.mock_ksclient
-        _mock_endpoints.return_value = self.mock_get_endpoints
-
-        svc = NovaSvc(BllRequest(auth_token=get_mock_token(),
-                                 data={api.OPERATION: 'instance-list',
-                                       'filter': 'dbaas'
-                                       }))
-
-        reply = svc.handle()
-        self.assertEqual(api.COMPLETE, reply[api.STATUS])
-        self.assertEqual(1, len(reply[api.DATA]['instances']))
-        self.assertEqual(self.server_list[0].id,
-                         (reply[api.DATA]['instances'][0]['id']))
-
-    @mock.patch.object(UserGroupSvc, '_get_ks_client')
-    @mock.patch.object(TokenHelpers, 'get_service_endpoint')
-    @mock.patch.object(TokenHelpers, 'get_endpoints')
-    @mock.patch.object(NovaSvc, '_get_nova_client')
-    def test_msgaas_instance_list(self,
-                                  _mock_nova_client,
-                                  _mock_endpoints,
-                                  _mock_serv_end,
-                                  _mock_ks_client):
-        _mock_nova_client.return_value = self.mock_novaclient
-        _mock_serv_end.return_value = None
-        _mock_ks_client.return_value = self.mock_ksclient
-        _mock_endpoints.return_value = self.mock_get_endpoints
-
-        svc = NovaSvc(BllRequest(auth_token=get_mock_token(),
-                                 data={api.OPERATION: 'instance-list',
-                                       'filter': 'msgaas'}))
-
-        reply = svc.handle()
-        self.assertEqual(api.COMPLETE, reply[api.STATUS])
-        self.assertEqual(1, len(reply[api.DATA]['instances']))
-        self.assertEqual(self.server_list[2].id,
-                         (reply[api.DATA]['instances'][0]['id']))
-
-    @mock.patch.object(UserGroupSvc, '_get_ks_client')
-    @mock.patch.object(TokenHelpers, 'get_service_endpoint')
-    @mock.patch.object(TokenHelpers, 'get_endpoints')
-    @mock.patch.object(NovaSvc, '_get_nova_client')
-    def test_ci_instance_list(self,
-                              _mock_nova_client,
-                              _mock_endpoints,
-                              _mock_serv_end,
-                              _mock_ks_client):
-        _mock_nova_client.return_value = self.mock_novaclient
-        _mock_serv_end.return_value = None
-        _mock_ks_client.return_value = self.mock_ksclient
-        _mock_endpoints.return_value = self.mock_get_endpoints
-
-        svc = NovaSvc(BllRequest(auth_token=get_mock_token(),
-                                 data={api.OPERATION: 'instance-list',
-                                       'filter': 'ci'}))
-
-        reply = svc.handle()
-        self.assertEqual(api.COMPLETE, reply[api.STATUS])
-        self.assertEqual(1, len(reply[api.DATA]['instances']))
-        self.assertEqual(self.server_list[3].id,
-                         (reply[api.DATA]['instances'][0]['id']))
-
-    @mock.patch.object(UserGroupSvc, '_get_ks_client')
-    @mock.patch.object(TokenHelpers, 'get_service_endpoint')
-    @mock.patch.object(TokenHelpers, 'get_endpoints')
-    @mock.patch.object(NovaSvc, '_get_nova_client')
-    def test_project_instance_list(self,
-                                   _mock_nova_client,
-                                   _mock_endpoints,
-                                   _mock_serv_end,
-                                   _mock_ks_client):
-        _mock_nova_client.return_value = self.mock_novaclient
-        _mock_serv_end.return_value = None
-        _mock_ks_client.return_value = self.mock_ksclient
-        _mock_endpoints.return_value = self.mock_get_endpoints
-
-        svc = NovaSvc(BllRequest(auth_token=get_mock_token(),
-                                 data={
-                                     api.OPERATION: 'instance-list',
-                                     'filter': 'project',
-                                     'project_id': self.project_list[0].id}))
-
-        reply = svc.handle()
-        self.assertEqual(api.COMPLETE, reply[api.STATUS])
-        self.assertEqual(1, len(reply[api.DATA]['instances']))
-        self.assertEqual(self.server_list[4].id,
-                         (reply[api.DATA]['instances'][0]['id']))
 
     @mock.patch.object(UserGroupSvc, '_get_ks_client')
     @mock.patch.object(TokenHelpers, 'get_service_endpoint')
@@ -482,7 +357,7 @@ class TestNovaSvc(TestCase):
 
         svc = NovaSvc(BllRequest(auth_token=get_mock_token(),
                                  operation='service-delete',
-                                 data={'hostname': 'hos1'}))
+                                 data={'hostname': 'myhost1'}))
         reply = svc.handle()
         self.assertEqual(reply[api.STATUS], api.COMPLETE)
 

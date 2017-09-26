@@ -117,14 +117,14 @@ def getConfigFile():
     test_config = os.path.realpath(
         os.path.join(os.path.dirname(__file__), '../tests/config.py'))
 
-    if os.getenv("LEIA_CONF_OVERRIDE"):
-        config_file = os.getenv("LEIA_CONF_OVERRIDE")
+    if os.getenv("BLL_CONF_OVERRIDE"):
+        config_file = os.getenv("BLL_CONF_OVERRIDE")
     elif os.path.isfile(test_config):
         config_file = test_config
-    elif os.path.isfile('/etc/leia/config.py'):
-        config_file = '/etc/leia/config.py'
+    elif os.path.isfile('/etc/opsconsole-server/config.py'):
+        config_file = '/etc/opsconsole-server/config.py'
     else:
-        config_file = '/etc/leia/leia.conf'
+        config_file = '/etc/opsconsole-server/opsconsole-server.conf'
 
     return config_file
 

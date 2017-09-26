@@ -8,10 +8,6 @@ CREATE TABLE IF NOT EXISTS `preferences` (
     PRIMARY KEY (`username`)
 );
 
-CREATE TABLE IF NOT EXISTS `eula` (
-    `accepted`   TINYINT(1) NOT NULL DEFAULT 1
-);
-
 CREATE TABLE IF NOT EXISTS `jobs` (
     `id`                VARCHAR(255) NOT NULL,
     `updated_at`        DATETIME     NOT NULL,
@@ -23,3 +19,5 @@ CREATE TABLE IF NOT EXISTS `jobs` (
 DROP TABLE IF EXISTS `install`;
 
 DROP TABLE IF EXISTS `plugin`;
+
+DROP TABLE IF EXISTS `eula`;

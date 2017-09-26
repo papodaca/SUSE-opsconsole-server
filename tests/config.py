@@ -28,7 +28,7 @@ insecure = bool(os.getenv('INSECURE')) or False
 # port for BLL to listen on when using run_tests.sh --runserver
 PORT = os.getenv('PORT') or '8084'
 
-env = os.getenv('env') or 'hos'
+env = os.getenv('env') or 'stdcfg'
 
 server = {
     'port': PORT,

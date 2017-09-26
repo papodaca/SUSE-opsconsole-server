@@ -22,9 +22,9 @@ class TestCatalogSvc(TestCase):
                             "ccp": {
                                 "clusters": {
                                     "cluster1": [
-                                        "padawan-ccp-c1-m1-mgmt",
-                                        "padawan-ccp-c1-m2-mgmt",
-                                        "padawan-ccp-c1-m3-mgmt"
+                                        "standard-ccp-c1-m1-mgmt",
+                                        "standard-ccp-c1-m2-mgmt",
+                                        "standard-ccp-c1-m3-mgmt"
                                     ]
                                 },
                                 "regions": [
@@ -45,9 +45,9 @@ class TestCatalogSvc(TestCase):
                                 ],
                                 "resources": {
                                     "compute": [
-                                        "padawan-ccp-comp0001-mgmt",
-                                        "padawan-ccp-comp0002-mgmt",
-                                        "padawan-ccp-comp0003-mgmt"
+                                        "standard-ccp-comp0001-mgmt",
+                                        "standard-ccp-comp0002-mgmt",
+                                        "standard-ccp-comp0003-mgmt"
                                     ]
                                 }
                             }
@@ -62,9 +62,9 @@ class TestCatalogSvc(TestCase):
                             "ccp": {
                                 "clusters": {
                                     "cluster1": [
-                                        "padawan-ccp-c1-m1-mgmt",
-                                        "padawan-ccp-c1-m2-mgmt",
-                                        "padawan-ccp-c1-m3-mgmt"
+                                        "standard-ccp-c1-m1-mgmt",
+                                        "standard-ccp-c1-m2-mgmt",
+                                        "standard-ccp-c1-m3-mgmt"
                                     ]
                                 },
                                 "regions": [
@@ -78,9 +78,9 @@ class TestCatalogSvc(TestCase):
                             "ccp": {
                                 "clusters": {
                                     "cluster1": [
-                                        "padawan-ccp-c1-m1-mgmt",
-                                        "padawan-ccp-c1-m2-mgmt",
-                                        "padawan-ccp-c1-m3-mgmt"
+                                        "standard-ccp-c1-m1-mgmt",
+                                        "standard-ccp-c1-m2-mgmt",
+                                        "standard-ccp-c1-m3-mgmt"
                                     ]
                                 },
                                 "regions": [
@@ -94,8 +94,8 @@ class TestCatalogSvc(TestCase):
                             "ccp": {
                                 "clusters": {
                                     "cluster1": [
-                                        "padawan-ccp-c1-m1-mgmt",
-                                        "padawan-ccp-c1-m3-mgmt"
+                                        "standard-ccp-c1-m1-mgmt",
+                                        "standard-ccp-c1-m3-mgmt"
                                     ]
                                 },
                                 "regions": [
@@ -109,9 +109,9 @@ class TestCatalogSvc(TestCase):
                             "ccp": {
                                 "clusters": {
                                     "cluster1": [
-                                        "padawan-ccp-c1-m1-mgmt",
-                                        "padawan-ccp-c1-m2-mgmt",
-                                        "padawan-ccp-c1-m3-mgmt",
+                                        "standard-ccp-c1-m1-mgmt",
+                                        "standard-ccp-c1-m2-mgmt",
+                                        "standard-ccp-c1-m3-mgmt",
                                         "some_host"
                                     ]
                                 },
@@ -128,14 +128,14 @@ class TestCatalogSvc(TestCase):
         # pretend comp0003 is a baremetal node, thus not in hypervisor-list
         self.mock_hyp_list = [
             {
-                'name': 'padawan-ccp-comp0001-mgmt',
+                'name': 'standard-ccp-comp0001-mgmt',
                 'region': 'region1',
-                'service_host': 'padawan-ccp-comp0001-mgmt'
+                'service_host': 'standard-ccp-comp0001-mgmt'
             },
             {
-                'name': 'padawan-ccp-comp0002-mgmt',
+                'name': 'standard-ccp-comp0002-mgmt',
                 'region': 'region1',
-                'service_host': 'padawan-ccp-comp0002-mgmt'
+                'service_host': 'standard-ccp-comp0002-mgmt'
             },
         ]
 
@@ -205,16 +205,16 @@ class TestCatalogSvc(TestCase):
 
     @mock.patch('bll.plugins.service.SvcBase.call_service')
     @mock.patch('bll.plugins.catalog_service.get_conf')
-    def test_get_compute_clusters_from_conf(self, mock_conf, mock_cs):
+    def test_get_compute_clusters_from_conf(self, mock_conf, mock_legacy):
         mock_conf.return_value = self.mock_serv_comp['nova']['components']
-        mock_cs.side_effect = self.mock_call_service
+        mock_legacy.side_effect = self.mock_call_service
         self._test_get_compute_clusters()
 
     @mock.patch('bll.plugins.service.SvcBase.call_service')
     @mock.patch('bll.plugins.catalog_service.get_conf')
-    def test_get_compute_clusters_from_ardana(self, mock_conf, mock_cs):
+    def test_get_compute_clusters_from_ardana(self, mock_conf, mock_legacy):
         mock_conf.return_value = None
-        mock_cs.side_effect = self.mock_call_service
+        mock_legacy.side_effect = self.mock_call_service
         self._test_get_compute_clusters()
 
     def _test_get_compute_clusters(self):
@@ -227,8 +227,8 @@ class TestCatalogSvc(TestCase):
         data = svc.handle()[api.DATA]
         self.assertTrue('ccp:compute' in data)
         self.assertEqual(len(data['ccp:compute']), 2)
-        self.assertTrue('padawan-ccp-comp0001-mgmt' in data['ccp:compute'])
-        self.assertTrue('padawan-ccp-comp0003-mgmt' not in data['ccp:compute'])
+        self.assertTrue('standard-ccp-comp0001-mgmt' in data['ccp:compute'])
+        self.assertTrue('standard-ccp-comp0003-mgmt' not in data['ccp:compute'])
 
     @mock.patch('bll.plugins.catalog_service.get_conf')
     def test_get_swift_clusters_from_conf(self, mock_conf):
@@ -237,9 +237,9 @@ class TestCatalogSvc(TestCase):
 
     @mock.patch('bll.plugins.service.SvcBase.call_service')
     @mock.patch('bll.plugins.catalog_service.get_conf')
-    def test_get_swift_clusters_from_ardana(self, mock_conf, mock_cs):
+    def test_get_swift_clusters_from_ardana(self, mock_conf, mock_legacy):
         mock_conf.return_value = None
-        mock_cs.side_effect = self.mock_call_service
+        mock_legacy.side_effect = self.mock_call_service
         self._test_get_swift_clusters()
 
     def _test_get_swift_clusters(self):
@@ -252,7 +252,7 @@ class TestCatalogSvc(TestCase):
         data = svc.handle()[api.DATA]
         self.assertTrue('ccp:cluster1' in data)
         self.assertEqual(len(data['ccp:cluster1']), 4)
-        self.assertTrue('padawan-ccp-c1-m1-mgmt' in data['ccp:cluster1'])
+        self.assertTrue('standard-ccp-c1-m1-mgmt' in data['ccp:cluster1'])
         self.assertTrue('some_host' in data['ccp:cluster1'])
 
     @mock.patch('bll.plugins.catalog_service.get_conf')

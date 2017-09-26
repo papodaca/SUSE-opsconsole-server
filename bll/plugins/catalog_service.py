@@ -90,7 +90,7 @@ class CatalogSvc(service.SvcBase):
     def get_compute_clusters(self):
         """
         Returns compute cluster data with control plane and region data.
-        Refer to an example of services in HOS's service_topology.yml
+        Refer to an example of services in Ardana's service_topology.yml
 
         Request format::
 
@@ -113,7 +113,7 @@ class CatalogSvc(service.SvcBase):
         for hyp in hyp_list:
             # Using the hypervisor's 'name' doesn't always work because eon
             # uses a strange name like "domain-c7.xxxxx" that doesn't match
-            # what # HLM uses in its model.  The hypervisor's service_host
+            # what Ardana uses in its model.  The hypervisor's service_host
             # appears to match what's in the model and works with kvm hosts,
             ch_name = hyp['service_host']
 
@@ -176,7 +176,7 @@ class CatalogSvc(service.SvcBase):
     def get_swift_clusters(self):
         """
         Returns swift cluster data with control plane and region data.
-        example of services in HOS's service_topology.yml
+        example of services in Ardana's service_topology.yml
 
         Request format::
 
@@ -216,7 +216,7 @@ class CatalogSvc(service.SvcBase):
     def _derive_clusters(self, *comps):
         """
             For each component in *comps, return a dict of clusters
-            Refer to an example of services in HOS's service_topology.yml
+            Refer to an example of services in Ardana's service_topology.yml
         """
 
         result = {}

@@ -262,8 +262,8 @@ class TestComputeSvc(TestCase):
                     },
                     {
                         "id": "ca70eaac-8bd9-411d-9c98-d90d7812b5a1",
-                        "name": "hlm_properties",
-                        "value": "hlm_properties_blah"
+                        "name": "ardana_properties",
+                        "value": "ardana_properties_blah"
                     }
                 ],
                 "hypervisor_hostname":
@@ -300,7 +300,7 @@ class TestComputeSvc(TestCase):
 
     @patch('bll.api.auth_token.TokenHelpers.get_service_endpoint',
            return_value=randomurl())
-    def test_get_compute_details_cs(self, *_):
+    def test_get_compute_details_legacy(self, *_):
         request = {
             api.TARGET: 'compute',
             api.ACTION: 'GET',
@@ -322,7 +322,7 @@ class TestComputeSvc(TestCase):
         self.assertEqual(api.COMPLETE, reply[api.STATUS])
 
     @patch.object(TokenHelpers, 'get_service_endpoint', return_value=None)
-    def test_get_compute_details_hos(self, a):
+    def test_get_compute_details_stdcfg(self, a):
         request = {
             api.TARGET: 'compute',
             api.ACTION: 'GET',
@@ -385,7 +385,7 @@ class TestComputeSvc(TestCase):
             }))
 
         reply = svc.handle()
-        self.assertEqual(reply['data']['hlm']['server-group'], 'some_group')
+        self.assertEqual(reply['data']['ardana']['server-group'], 'some_group')
         self.assertEqual(reply['data']['monasca']['used_cpu_perc'], 123)
         self.assertEqual(reply['data']['instances'], 2)
         self.assertEqual(reply[api.STATUS], api.COMPLETE)

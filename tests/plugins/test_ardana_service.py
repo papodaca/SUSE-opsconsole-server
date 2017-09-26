@@ -12,7 +12,7 @@ from bll.common.job_status import get_job_status
 
 
 @functional('keystone,ardana')
-class HLMUXSvcTest(TestCase):
+class ArdanaSvcTest(TestCase):
 
     def setUp(self):
         self.user = None

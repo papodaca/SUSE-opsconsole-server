@@ -19,35 +19,35 @@ FTI = {
         "ent_appl": {
             "DCM": {
                 "vip": "16.1.1.127",
-                "hostname": "mgr.hp.ent"
+                "hostname": "mgr.mycloud.com"
             },
             "CAN": {
                 "public_ip": "16.1.1.129",
                 "vip": "16.1.1.128",
-                "hostname": "mgr.hp.ent"
+                "hostname": "mgr.mycloud.com"
             }
         },
         "mgmt_appl": {
             "DCM": {
                 "vip": "16.1.1.123",
-                "hostname": "mgr.hp.ent"
+                "hostname": "mgr.mycloud.com"
             }
         },
         "cc_appl": {
             "DCM": {
                 "vip": "16.1.1.124",
-                "hostname": "mgr.hp.ent"
+                "hostname": "mgr.mycloud.com"
             },
             "CAN": {
                 "public_ip": "16.1.1.126",
                 "vip": "16.1.1.125",
-                "hostname": "mgr.hp.ent"
+                "hostname": "mgr.mycloud.com"
             }
         },
         "mon_appl": {
             "DCM": {
                 "vip": "16.1.1.129",
-                "hostname": "mon.hp.ent"
+                "hostname": "monitor.mycloud.com"
             }
         }
     },
@@ -61,17 +61,17 @@ FTI = {
     "migration": False,
     "images_settings": {
         "appl_images": [{
-            "avm_name": "cs-mgmt-controller",
-            "avm_type": "cs-mgmt-controller",
+            "avm_name": "mgmt-controller",
+            "avm_type": "mgmt-controller",
             "avm_role": "CloudController",
-            "avm_image": "cs-foundation"
+            "avm_image": "foundation"
         }, {
-            "avm_name": "cs-enterprise1-controller",
-            "avm_type": "cs-enterprise1",
+            "avm_name": "enterprise1-controller",
+            "avm_type": "enterprise1",
             "avm_role": "EnterpriseController",
-            "avm_image": "cs-enterprise"
+            "avm_image": "enterprise"
         }]},
-    "images_path": "\/CloudSystem"
+    "images_path": "\/legacy"
 }
 
 blanked_password = '****'
@@ -191,7 +191,7 @@ class Test(test_util.TestCase):
         and that JSON object requires password scrubbing
     '''
     def test_scrub_passwords_where_value_is_string(self):
-        body = {'appliance-settings': '{"cs-monasca-controller2": {'
+        body = {'appliance-settings': '{"monasca-controller2": {'
                                       '"ip": "192.168.0.35", '
                                       '"keepalive-priority": "98", '
                                       '"keystone-password": "mypassword"}, '
@@ -283,7 +283,7 @@ class Test(test_util.TestCase):
         self.assertEquals(result['auth_token'], 'None')
 
     def test_scrub_json_in_a_string_craziness_1(self):
-        test_data = {u'appliance-settings': u'{"cs-monasca-controller2": \
+        test_data = {u'appliance-settings': u'{"monasca-controller2": \
 {"ip": "192.168.0.35", "keystone-password": "unset", \
 "my_token": "sometoken"}}'}
         result = scrub_passwords(test_data)
@@ -291,8 +291,8 @@ class Test(test_util.TestCase):
         self.assertTrue('*****oken' in result)
 
     def test_scrub_json_in_a_string_craziness_2(self):
-        test_data = '{"appliance-settings": "{\\"cs-monasca-controller2\\": \
-{\\"ip\\": \\"mona3.hpiscmgmt.local\\", \
+        test_data = '{"appliance-settings": "{\\"monasca-controller2\\": \
+{\\"ip\\": \\"4.3.2.1\\", \
 \\"keystone-password\\": \\"unset\\", \
 \\"my_token\\": \\"sometoken\\"}}"}'
         result = scrub_passwords(test_data)

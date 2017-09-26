@@ -2,7 +2,7 @@
 # (c) Copyright 2016-2017 Hewlett Packard Enterprise Development LP
 # (c) Copyright 2017 SUSE LLC
 # This file is distributed under the same license as the bll
-# FIRST AUTHOR <gary.smith@hpe.com>, 2016.
+# Gary Smith, 2016.
 #
 #, fuzzy
 msgid ""
@@ -51,7 +51,7 @@ msgid "Baremetal updated successfully"
 msgstr ""
 
 #: bll/plugins/compute_service.py:221
-msgid "{0}{1} - Could not get HLM model for Resource"
+msgid "{0}{1} - Could not get Ardana model for Resource"
 msgstr ""
 
 #: bll/plugins/eon_service.py:144

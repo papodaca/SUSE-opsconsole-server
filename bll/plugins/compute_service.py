@@ -7,10 +7,10 @@ from datetime import datetime, timedelta
 from collections import defaultdict
 
 from bll import api
-from bll.common.util import is_cs
+from bll.common.util import is_legacy
 from bll.plugins.monitor_service import TYPE_UNKNOWN
 from bll.plugins.service import SvcBase, expose
-from bll.common.util import is_hos
+from bll.common.util import is_stdcfg
 
 
 LOG = logging.getLogger(__name__)
@@ -133,16 +133,16 @@ class ComputeSvc(SvcBase):
             compute_list = self._filter_eon_compute_node(resource_list)
             self._update_eon_with_stats(compute_list, nova_hyp_list)
 
-        if is_hos():
-            # In HOS, we create the compute list from EON and nova, but
-            # in CS10, we should only get the compute list from EON.
-            hos_compute_list = self.get_compute_data(nova_hyp_list, True)
-            hos_compute_list = \
-                self._filter_out_hosts(hos_compute_list, 'type', 'ironic')
+        if is_stdcfg():
+            # In stdcfg, we create the compute list from EON and nova, but
+            # in legacy, we should only get the compute list from EON.
+            nova_compute_list = self.get_compute_data(nova_hyp_list, True)
+            nova_compute_list = \
+                self._filter_out_hosts(nova_compute_list, 'type', 'ironic')
 
-            # merge hos_list INTO eon_list
+            # merge nova_compute_list INTO eon_list
             compute_list = \
-                self._merge_compute_hosts(hos_compute_list, compute_list)
+                self._merge_compute_hosts(nova_compute_list, compute_list)
 
         return compute_list
 
@@ -163,7 +163,7 @@ class ComputeSvc(SvcBase):
         datadata = self.data.get(api.DATA)
         id = datadata.get("id")
         type = datadata.get("type")
-        if self.has_eon and (is_cs() or type == 'esxcluster'):
+        if self.has_eon and (is_legacy() or type == 'esxcluster'):
             return self._get_eon_resource_details(id, type)
         else:
             return self._get_non_eon_details(type, id)
@@ -203,10 +203,10 @@ class ComputeSvc(SvcBase):
 
         if eon_response['state'] == "activated":
             if resource_type in ["hlinux", "kvm", "rhel", "hyperv"]:
-                hlm_compute_name = eon_response['id']
-                resp_dict['hlm'] = self.call_service(
+                ardana_compute_name = eon_response['id']
+                resp_dict['ardana'] = self.call_service(
                     target='ardana',
-                    path="/model/entities/servers/" + hlm_compute_name)
+                    path="/model/entities/servers/" + ardana_compute_name)
             elif resource_type == "esxcluster":
                 self.server_id = \
                     self._get_hash(eon_response['resource_mgr_id'] +
@@ -214,12 +214,12 @@ class ComputeSvc(SvcBase):
                 hosts = eon_response.get("inventory", {}).get("hosts", [])
                 resp_dict['host_count'] = len(hosts)
                 if self.server_id is not None:
-                    resp_dict['hlm'] = self.call_service(
+                    resp_dict['ardana'] = self.call_service(
                         target='ardana',
                         path="model/entities/servers/" + self.server_id)
                 else:
                     self.response[api.DATA] = [
-                        self._("{0}{1} - Could not get HLM model "
+                        self._("{0}{1} - Could not get Ardana model "
                                "for Resource").format(resource_id,
                                                       eon_response['name'])]
                     self.response[api.STATUS] = api.STATUS_ERROR
@@ -440,7 +440,7 @@ class ComputeSvc(SvcBase):
             return details
 
         # Use the cp_host to get server-group and role-related data
-        details['hlm'] = self.call_service(
+        details['ardana'] = self.call_service(
             target='ardana',
             path="/model/entities/servers/" + cp_host
         )
@@ -486,7 +486,7 @@ class ComputeSvc(SvcBase):
                          for host in compute_list}
 
         # EON hosts show up as hypervisor_hostname in nova but and as
-        # service_host in "HLM names" in monasca.  So we need this map to
+        # service_host in "Ardana names" in monasca.  So we need this map to
         # translate an EON name back to a name that monasca recognizes
         eon_equiv_hosts = {host['service_host']: host['hypervisor_hostname']
                            for host in compute_list}
@@ -572,16 +572,16 @@ class ComputeSvc(SvcBase):
                     compute_nodes.append(node)
         return compute_nodes
 
-    def _merge_compute_hosts(self, hos_list, all_list):
+    def _merge_compute_hosts(self, nova_list, all_list):
         """
-        For any compute host in the hos_list, add it to eon_list only if it is
+        For any compute host in the nova_list, add it to eon_list only if it is
         unique.  If a dupe is found, merge the host.
         This handles the case where 'eon resource-list' and
         'nova hypervisor-list' see the same compute host, but provide different
          results.
         """
         if not all_list:
-            return hos_list
+            return nova_list
 
         # create a dict of region -> hypervisor_id -> host
         eon_hyp_dict = defaultdict(dict)
@@ -604,10 +604,10 @@ class ComputeSvc(SvcBase):
                                   eon_host.get('resource_mgr_id'))
             eon_host_dict[hostname] = eon_host
 
-        for hos_host in hos_list:
-            region = hos_host['region']
-            hyp_id = hos_host['hypervisor_id']
-            hostname = hos_host['hypervisor_hostname']
+        for nova_host in nova_list:
+            region = nova_host['region']
+            hyp_id = nova_host['hypervisor_id']
+            hostname = nova_host['hypervisor_hostname']
 
             eon_host = None
             if region in eon_hyp_dict:
@@ -615,13 +615,13 @@ class ComputeSvc(SvcBase):
             eon_host = eon_host or eon_host_dict.get(hostname)
 
             if not eon_host:
-                all_list.append(hos_host)
+                all_list.append(nova_host)
             else:
-                # we put almost everything from hos_host into eon_host except
+                # we put almost everything from nova_host into eon_host except
                 # for the keys in 'key_exceptions'
                 key_exceptions = ('id', 'name', 'type', 'state')
                 update_dict = {k: v
-                               for k, v in hos_host.iteritems()
+                               for k, v in nova_host.iteritems()
                                if k not in key_exceptions}
                 eon_host.update(update_dict)
 

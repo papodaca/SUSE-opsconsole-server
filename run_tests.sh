@@ -34,18 +34,12 @@ function usage {
 #
 root=`pwd -P`
 
-# To run functional tests against HOS keystone when its endpoint runs over https,
+# To run functional tests against keystone when its endpoint runs over https,
 # do the following as sudo
-# 1. download /usr/local/share/ca-certificates/helion-internal-cacert.crt from
-#    the deployer system into the /usr/local/share/ca-certificates dir on your system.
+# 1. download the appropriate certificate from the deployer system into the
+#    /usr/local/share/ca-certificates dir on your system.
 #    This certificate is normally static, so you only have to do that once.
 #
-#    For CS10, all newly-installed environments, by default, will have a new
-#              self-signed cert, so you'll need to copy over
-#              /usr/local/share/ca-certificates/cs-internal-cert-CA.crt to
-#              your system's /usr/local/share/ca-certificates dir.
-#              Tip: Rename the cs-internal-cert-CA.crt to something else
-#                   so you can switch between environments as needed.
 # 2. update-ca-certificates
 
 # Direct the Requests library to use the installed ssl standard certs
@@ -109,8 +103,8 @@ function run_server {
     ${command_wrapper} python ${root}/setup.py develop
     if [[ $testargs && -f $testargs ]] ; then
        conf_file=$testargs
-    elif [[ $LEIA_CONF_OVERRIDE ]] ; then
-       conf_file=$LEIA_CONF_OVERRIDE
+    elif [[ $BLL_CONF_OVERRIDE ]] ; then
+       conf_file=$BLL_CONF_OVERRIDE
     else
        conf_file=${root}/tests/config.py
     fi

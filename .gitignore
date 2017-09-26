@@ -15,3 +15,6 @@ build/
 dist/
 pylint.txt
 .tox
+.idea
+*.iml
+nohup.out

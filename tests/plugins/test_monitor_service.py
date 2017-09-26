@@ -330,4 +330,4 @@ class TestMonitorSvc(TestCase):
         for status in data.values():
             self.assertIn(status, (TYPE_UP, TYPE_UNKNOWN))
             if status == TYPE_UNKNOWN:
-                print "Perhaps it's time to rebuild HOS??"
+                print "Perhaps it's time to rebuild the cloud??"

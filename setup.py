@@ -24,17 +24,16 @@ setup(
     name='bll',
     version='1.0',
     author='Hewlett Packard Enterprise Development LP',
-    author_email='hpcloud@hpe.com',
-    url='https://www.hpe.com/CloudSolutions',
     packages=find_packages(exclude=['tests', 'tests.*', 'stubs', 'stubs.*']),
-    license='(c) Copyright 2016 Hewlett Packard Enterprise Development LP',
+    license='(c) Copyright 2016 Hewlett Packard Enterprise Development LP'
+            '(c) Copyright 2017 SUSE LLC',
     include_package_data=True,
     scripts=[],
     description='Business Logic Layer for the Operations Console',
     # The following are the first-order dependencies, excluding
     # the openstack dependencies that are installed from source.  The
     # entries here are used by the wheel build (pip wheel .) that is used
-    # by the HOS build.
+    # by the Ardana build.
     install_requires=[
         'pecan',
         'stevedore',

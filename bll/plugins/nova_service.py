@@ -374,32 +374,8 @@ class NovaSvc(service.SvcBase):
                     instance['memory'] = None
                     instance['storage'] = None
 
-                filter = self.request[api.DATA].get('filter')
-                include = False
-                if filter == FILTER_DBAAS:
-                    if instance['name'].startswith("trove") and \
-                       isinstance(instance['metadata'], dict) and \
-                       instance['metadata'].get('monitor') == "true":
-                        include = True
-
-                elif filter == FILTER_MSGAAS:
-                    if isinstance(instance['metadata'], dict) and \
-                       instance['metadata'].get('msgaas') == "true":
-                        include = True
-
-                elif filter == FILTER_CI:
-                    if isinstance(instance['metadata'], dict) and \
-                       instance['metadata'].get('helionce') == "true":
-                        include = True
-
-                elif filter == FILTER_PROJECT:
-                    if self.request[api.DATA].get('project_id') == \
-                       instance.get('tenant_id'):
-                        include = True
-
-                if filter is None or include:
-                    self._populate_metrics(instance)
-                    instance_list.append(instance)
+                self._populate_metrics(instance)
+                instance_list.append(instance)
 
         return {'instances': instance_list}
 

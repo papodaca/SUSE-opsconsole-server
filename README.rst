@@ -9,10 +9,10 @@ Overview
 Basic Architecture
 ------------------
 The Business Logic Layer (BLL) is the server component of the operations console.
-Beginning in HOS 3.0, it consists of a single component which handles all
-incoming requests and executes each in a thread.  It runs under the pecan_ WSGI
-framework.  In production, the web layer is hosted under Apache, but it can also
-run standalone for development and testing.
+It consists of a single component which handles all incoming requests and 
+executes each in a thread.  It runs under the pecan_ WSGI framework.  In 
+production, the web layer is hosted under Apache, but it can also run standalone 
+for development and testing.
 
 .. _pecan: http://pypi.python.org/pypi/pecan
 
@@ -25,13 +25,11 @@ the source tree, used for the variety of ways that the BLL can be launched.
 
 Now there is just a single copy file in this source distribution,
 ``tests/config.py``, that is used for the BLL testing.  The production version
-of `this file`_ is maintained in a separate repo, `hp/ops-console-ansible`_.
+of this file is maintained in a separate repo.
 
 In modern versions of pecan (0.8.3. and above), the config file is required to
 be a python file whose name ends with ``.py``, and will fail at startup if it is
 anything else, including ``.conf``.
-
-.. _this file: https://review.hpcloud.net/gitweb?p=hp/ops-console-ansible.git;a=history;f=roles/ops-common/templates/ops-console.conf.j2;hb=refs/heads/hp/prerelease/liberty
 
 Launch environments
 ...................
@@ -42,7 +40,7 @@ There are a number of ways the code can be run:
   Launched via run_tests.sh or via an IDE.  The Jenkins build also launches
   functional tests via run_tests.sh.  Note: since Python tests do not have a
   "main" program, there is no way to pass command line parameters, and thus the
-  only way to change which config file used is via the LEIA_CONF_OVERRIDE
+  only way to change which config file used is via the BLL_CONF_OVERRIDE
   environment variable.
 
 - ``run_tests.sh --runserver``
@@ -55,9 +53,7 @@ There are a number of ways the code can be run:
   In production, the web layer runs in a pecan container under apache, via WSGI.
   The file that is launched is ``app.wsgi``, and it in turn deploys pecan
   and specifies the config file to be used.  Note: ``app.wsgi`` is generated
-  by ansible from a template in the `hp/ops-console-ansible`_ project.
-
-.. _hp/ops-console-ansible: https://review.hpcloud.net/gitweb?p=hp/ops-console-ansible.git;a=summary
+  by ansible from a template.
 
 Config file properties
 ......................
@@ -105,7 +101,7 @@ The order as follows:
    This is supported in those launchers that accept command line arguments:
    the test script and ``run_tests.sh``
 
-#. Filename specified in LEIA_CONF_OVERRIDE environment variable
+#. Filename specified in BLL_CONF_OVERRIDE environment variable
 
    Specifies the config file to use.  Supported everywhere.
 
@@ -116,11 +112,11 @@ The order as follows:
    Note: this file is not present on a production system, and the launchers used
    in production (via apache) will not look for this file.
 
-#. ``/etc/leia/config.py`` (production only)
+#. ``/etc/opsconsole-server/config.py`` (production only)
 
    When launched in production (via apache) this file is used if present.
 
-#. ``/etc/leia/leia.conf`` (production only -- deprecated)
+#. ``/etc/opsconsole-server/opsconsole-server.conf`` (production only -- deprecated)
 
    When launched in production (via apache) this file is used as a last resort.
    Since its name prevents migrating to a modern version of pecan, it is
